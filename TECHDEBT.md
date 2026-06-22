@@ -1,6 +1,6 @@
 # Tech debt
 
-Tracked shortcuts and known gaps. See `ROADMAP.md` for the forward plan.
+Tracked shortcuts and known gaps.
 
 ## Pre-existing parser gaps (surfaced 2026-06-12 when the jest harness was restored)
 
@@ -12,7 +12,7 @@ was resolved by the Phase 2 migration and its test is un-skipped.)
 
 | Generator | Symptom | Resolution path |
 |---|---|---|
-| `MarkdownGenerator` | gray-matter frontmatter is parsed away but not exposed as `metadata.frontmatter` | Markdown rework (ROADMAP Phase 6, optional) |
+| `MarkdownGenerator` | gray-matter frontmatter is parsed away but not exposed as `metadata.frontmatter` | Markdown rework (Phase 6, optional) |
 | `HtmlGenerator` (cheerio) | does not emit `id`'d `<section>` nodes | HTML rework (not currently scheduled) |
 
 ## WASM engine (Phase 1)
@@ -24,7 +24,7 @@ was resolved by the Phase 2 migration and its test is un-skipped.)
   Until then we stay on the 0.24.x API (`Parser.Language.load`, `lang.query`).
 - **Dart is deferred (consequence of the pin).** `tree-sitter-wasms@0.1.13`'s
   `tree-sitter-dart.wasm` is grammar ABI version 15, but web-tree-sitter 0.24.7 only loads
-  13–14 (`Incompatible language version 15`). Dart is the one ROADMAP Phase 4 language not yet
+  13–14 (`Incompatible language version 15`). Dart is the one Phase 4 language not yet
   shipped; it lands once the runtime upgrade above is done.
 - **Protocol Buffers and GraphQL are deferred (Phase 5).** `tree-sitter-wasms@0.1.13` ships
   no `proto`/`graphql` grammar (only TOML, of the Phase-5 formats), and `@vscode/tree-sitter-wasm`
@@ -35,10 +35,14 @@ was resolved by the Phase 2 migration and its test is un-skipped.)
   ships no `rst`/`asciidoc`/`latex`/`org`/`wiki` grammar (nor `markdown`), so RST/AsciiDoc/LaTeX/
   Org/Wiki are hand-written line parsers on the shared `MarkupGenerator` base — appropriate, since
   markup is line-oriented. The optional `MarkdownGenerator` → `tree-sitter-markdown` migration
-  (ROADMAP Phase 6) stays blocked for the same reason; the current regex Markdown parser is fine.
+  (Phase 6) stays blocked for the same reason; the current regex Markdown parser is fine.
 
 ## Notes
 
+- **`OutlineNode` contract is additive-only (kg-gen depends on it).** kg-gen reads `title`,
+  `type`, `line`, `children`, and `metadata.{visibility, isStatic, isAbstract, parameters[].name,
+  dataType}`, plus the `{maxDepth, includeLineNumbers, includePrivate, includeComments}` options.
+  Never remove or rename these fields — only add. (Preserved here from the retired ROADMAP.)
 - `generateFromContent` rejects with `UnsupportedExtensionError` on unknown extensions.
   Heterogeneous-input callers (kg-gen) should switch to `generateFromContentSafe` /
   `generateFromFileSafe`, which return `[]` instead. kg-gen still calls the throwing variant

@@ -9,7 +9,7 @@ import { GeneratorOptions, OutlineNode } from '../../types';
  * TOML tables are flat siblings in the AST — `[server]` and `[server.tls]` are
  * both direct children of the document — so after the base builds the (flat)
  * outline we reparent dotted sub-tables under their longest existing prefix
- * table to recover the logical hierarchy the ROADMAP wants.
+ * table to recover the logical hierarchy outlion exposes.
  */
 export class TomlGenerator extends TreeSitterGenerator {
   protected readonly grammarName = 'toml';
