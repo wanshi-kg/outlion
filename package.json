@@ -1,6 +1,6 @@
 {
   "name": "@wanshi-kg/outlion",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Universal document outline structure generator for various file types and programming languages",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
