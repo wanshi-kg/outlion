@@ -1,13 +1,31 @@
-# Document Outline Generator
+# outlion
 
-A universal document outline structure generator for various file types and programming languages. Perfect for knowledge graphs, documentation tools, and content analysis.
+**Universal outline & symbol generator for code and documents.** One tree-sitter (WASM) engine, 45 file types, 11 output formats, and a deterministic symbol/edge API — built for knowledge graphs, documentation tooling, and content analysis.
 
+[![CI](https://github.com/wanshi-kg/outlion/actions/workflows/ci.yml/badge.svg)](https://github.com/wanshi-kg/outlion/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@wanshi-kg/outlion.svg)](https://www.npmjs.com/package/@wanshi-kg/outlion)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Supported File Types](#supported-file-types)
+- [Output Format](#output-format)
+- [Symbol API](#symbol-api-code)
+- [Configuration Options](#configuration-options)
+- [Advanced Usage](#advanced-usage)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## 🚀 Features
 
-- **Multi-format Support**: Handles documents (Markdown, JSON, XML, YAML, HTML, CSV) and code files
-- **Code Analysis**: AST-based parsing for TypeScript, JavaScript, Python, Java, C#, and C++. Python & C++ run on tree-sitter; the engine is migrating to a unified tree-sitter query core — see [ROADMAP.md](ROADMAP.md)
+- **45 file types, one engine**: documents (Markdown, JSON, XML, YAML, HTML, CSV), code (14 languages), config/data (TOML, INI, `.properties`/`.env`), and markup (RST, AsciiDoc, LaTeX, Org, Wiki)
+- **Code analysis on tree-sitter**: every code language parses through a single tree-sitter (WASM) query core — no per-language hand-rolled parsers
+- **Symbol & edge API**: `extractSymbols` enumerates code symbols deterministically and network-free, with within-file `calls`/`imports` edges for TS/JS/Python
+- **11 output formats**: ascii-tree, JSON, YAML, XML, CSV, SQL, DOT, Mermaid, PlantUML, HTML
 - **Hierarchical Structure**: Maintains proper parent-child relationships
 - **Rich Metadata**: Line numbers, visibility, parameters, docstrings, and more
 - **Extensible Architecture**: Easy to add support for new file types
@@ -36,8 +54,8 @@ const generator = new DocumentOutlineGenerator();
 const outline = await generator.generateFromFile('./example.md');
 console.log(JSON.stringify(outline, null, 2));
 
-// Analyze content directly
-const outline = await generator.generateFromContent(
+// Or analyze content directly
+const inline = await generator.generateFromContent(
   '# Title\n## Subtitle\nContent here', 
   'md'
 );
@@ -114,7 +132,7 @@ outlion list-formats
 All code languages run on a single tree-sitter (WASM) query engine. TOML uses the same engine;
 INI/Properties and the markup formats (RST/AsciiDoc/LaTeX/Org/Wiki) are line parsers. Protocol
 Buffers and GraphQL are deferred (no grammar under the pinned runtime — see
-[TECHDEBT.md](TECHDEBT.md)). See [ROADMAP.md](ROADMAP.md).
+[TECHDEBT.md](TECHDEBT.md)).
 
 ## 📊 Output Format
 
@@ -381,31 +399,25 @@ npm run lint:fix     # Fix ESLint issues
 
 ```
 src/
-├── index.ts                    # Main entry point + generator registry
+├── index.ts                    # DocumentOutlineGenerator: registry + outline + Symbol API
 ├── types.ts                    # OutlineNode / GeneratorOptions definitions
 ├── errors.ts                   # Typed error hierarchy
-├── cli.ts                      # CLI implementation
+├── symbols.ts                  # SymbolTable contract + hashContent
+├── cli.ts                      # CLI (`outlion`)
+├── formatters/                 # ascii-tree, json, yaml, xml, csv, sql, dot, mermaid, plantuml, html
+├── docstrings/                 # JSDoc / Javadoc / pydoc / xmldoc extractors
 ├── generators/
 │   ├── OutlineGenerator.ts     # Base generator class
-│   ├── MarkdownGenerator.ts    # Markdown
-│   ├── JsonGenerator.ts        # JSON
-│   ├── XmlGenerator.ts         # XML
-│   ├── YamlGenerator.ts        # YAML
-│   ├── HtmlGenerator.ts        # HTML
-│   ├── CsvGenerator.ts         # CSV
-│   ├── EmptyGenerator.ts       # Empty / fallback
+│   ├── MarkdownGenerator.ts, JsonGenerator.ts, XmlGenerator.ts, YamlGenerator.ts, HtmlGenerator.ts, CsvGenerator.ts
+│   ├── IniGenerator.ts, PropertiesGenerator.ts                  # config/data line parsers
+│   ├── MarkupGenerator.ts + Rst/Asciidoc/Latex/Org/Wiki         # markup line parsers
 │   └── code/
-│       ├── TreeSitterGenerator.ts  # Shared WASM tree-sitter base
-│       ├── TypeScriptGenerator.ts  # TypeScript (acorn)
-│       ├── JavaScriptGenerator.ts  # JavaScript (acorn)
-│       ├── PythonGenerator.ts      # Python (tree-sitter)
-│       ├── JavaGenerator.ts        # Java (ANTLR)
-│       ├── CSharpGenerator.ts      # C#
-│       └── CppGenerator.ts         # C++ (tree-sitter)
-├── queries/                    # Per-language tree-sitter .scm query files
+│       ├── TreeSitterGenerator.ts   # Shared WASM tree-sitter base (outline + extractSymbols)
+│       └── <Lang>Generator.ts       # TS, JS, Python, Java, C#, C++, Go, Rust, Ruby,
+│                                    #   PHP, Kotlin, Swift, Scala, Lua, TOML
+└── queries/<lang>/*.scm        # tree-sitter outline.scm + references.scm
 tests/
-├── DocumentOutlineGenerator.test.ts
-├── golden.test.ts              # Golden-file fixture harness
+├── *.test.ts                   # main, golden, formatters, symbols, docstrings
 └── fixtures/<lang>/            # input.* + expected.json
 ```
 
@@ -418,15 +430,14 @@ For tree-sitter languages (the target architecture):
 3. Register the extension in `DocumentOutlineGenerator`
 4. Add a `tests/fixtures/<lang>/` golden fixture
 
-See [ROADMAP.md](ROADMAP.md) for the unified engine design.
+See `TreeSitterGenerator` and the `queries/` directory for the shared engine; deferrals are tracked in [TECHDEBT.md](TECHDEBT.md).
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Fork and branch (`git checkout -b feature/my-change`)
+2. Make the change with a test — for a new language, add a `tests/fixtures/<lang>/` golden fixture (`UPDATE_GOLDEN=1 npm test` regenerates expected output)
+3. Ensure `npm test` and `npm run lint` pass — CI runs both on Node 18/20/22
+4. Open a Pull Request
 
 ## 📄 License
 
@@ -434,7 +445,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- [web-tree-sitter](https://github.com/tree-sitter/tree-sitter) + [tree-sitter-wasms](https://github.com/Gregoor/tree-sitter-wasms) for code parsing (TS, JS, Python, Java, C#, C++)
+- [web-tree-sitter](https://github.com/tree-sitter/tree-sitter) + [tree-sitter-wasms](https://github.com/Gregoor/tree-sitter-wasms) for code parsing (all 14 languages on one engine)
 - [Gray Matter](https://github.com/jonschlinkert/gray-matter) for frontmatter support
 - [Cheerio](https://github.com/cheeriojs/cheerio) for HTML parsing
 - [Fast XML Parser](https://github.com/NaturalIntelligence/fast-xml-parser) for XML support
