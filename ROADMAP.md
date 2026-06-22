@@ -1,4 +1,4 @@
-# ROADMAP — document-outline-gen
+# ROADMAP — outlion
 
 > Supersedes `TODO.md` as the planning document. Every TODO item maps to a phase below.
 > Last updated: 2026-06-12.
@@ -11,7 +11,7 @@
 ## Purpose & primary consumer
 
 This library is past PoC validation: it works, and **kg-gen depends on it**
-(`"document-outline-gen": "github:AlexSabaka/document-outline-gen"`). kg-gen wraps it in
+(`@wanshi-kg/outlion`, formerly `github:AlexSabaka/document-outline-gen`). kg-gen wraps it in
 `src/shared/utils/documentOutline.ts`, calls `generateFromContent(content, ext, options)`
 per file, and renders its own ASCII tree from the returned `OutlineNode[]` to inject as
 `{{fileOutline}}` into LLM prompts (`PromptTemplateEngine.enhanceContext()`, configured by
@@ -250,7 +250,7 @@ unchanged content is hash-equal.
 ## Cross-cutting concerns
 
 - **Versioning & release.** Start tagging (`v1.1.0` after Phase 0). Recommend kg-gen pin
-  `github:AlexSabaka/document-outline-gen#semver:^1.1` — today it tracks the default
+  `@wanshi-kg/outlion@^1.0` (npm) — today it tracks the default
   branch, so any push lands in kg-gen's next install. Consider npm publish once Phase 2
   stabilizes (name `document-outline-gen` vs README's `document-outline-generator` —
   resolve in Phase 0.6).

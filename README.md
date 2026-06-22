@@ -17,18 +17,18 @@ A universal document outline structure generator for various file types and prog
 ## 📦 Installation
 
 ```bash
-# Not yet published to npm — install from GitHub:
-npm install github:AlexSabaka/document-outline-gen
+npm install @wanshi-kg/outlion
+# or from GitHub: npm install github:wanshi-kg/outlion
 ```
 
-The `document-outline-gen` CLI binary is available after install (see [CLI Usage](#cli-usage)).
+The `outlion` CLI binary is available after install (see [CLI Usage](#cli-usage)).
 
 ## 🎯 Quick Start
 
 ### Basic Usage
 
 ```typescript
-import DocumentOutlineGenerator from 'document-outline-gen';
+import DocumentOutlineGenerator from '@wanshi-kg/outlion';
 
 const generator = new DocumentOutlineGenerator();
 
@@ -58,24 +58,24 @@ const outline = await generator.generateFromFile('./src/app.ts', {
 
 ```bash
 # Basic analysis
-document-outline-gen example.ts
+outlion example.ts
 
 # With options
-document-outline-gen src/app.py --line-numbers --max-depth 2 --format json
+outlion src/app.py --line-numbers --max-depth 2 --format json
 
 # Export formats: ascii-tree (default), json, yaml, xml, csv, sql, dot, mermaid, plantuml, html
-document-outline-gen src/app.ts --format mermaid
-document-outline-gen data.csv --format sql --output nodes.sql
+outlion src/app.ts --format mermaid
+outlion data.csv --format sql --output nodes.sql
 
 # Token-lean tree (no line numbers / metadata)
-document-outline-gen src/app.ts --format tree --compact
+outlion src/app.ts --format tree --compact
 
 # Save to file
-document-outline-gen README.md --output outline.json
+outlion README.md --output outline.json
 
 # List supported extensions / output formats
-document-outline-gen list-extensions
-document-outline-gen list-formats
+outlion list-extensions
+outlion list-formats
 ```
 
 ## 📋 Supported File Types
@@ -210,7 +210,7 @@ interface OutlineNode {
 The same outline can be rendered into any registered format from the library:
 
 ```typescript
-import DocumentOutlineGenerator, { formatOutline, getFormats } from 'document-outline-gen';
+import DocumentOutlineGenerator, { formatOutline, getFormats } from '@wanshi-kg/outlion';
 
 const generator = new DocumentOutlineGenerator();
 const outline = await generator.generateFromFile('./src/app.ts');
@@ -236,7 +236,7 @@ definitions for every code language, plus within-file `calls`/`imports` edges fo
 JavaScript and Python.
 
 ```typescript
-import DocumentOutlineGenerator, { hashContent, SYMBOL_SCHEMA_VERSION } from 'document-outline-gen';
+import DocumentOutlineGenerator, { hashContent, SYMBOL_SCHEMA_VERSION } from '@wanshi-kg/outlion';
 
 const generator = new DocumentOutlineGenerator();
 const table = await generator.extractSymbols(source, 'ts');
@@ -256,7 +256,7 @@ only** — cross-file resolution is the consumer's job. Non-code extensions retu
 The `SymbolTable` shape is versioned (`SYMBOL_SCHEMA_VERSION`) with an exported JSON Schema
 (`SYMBOL_TABLE_JSON_SCHEMA`).
 
-CLI: `document-outline-gen symbols src/app.ts`.
+CLI: `outlion symbols src/app.ts`.
 
 ## ⚙️ Configuration Options
 
@@ -280,7 +280,7 @@ interface GeneratorOptions {
 Create your own generator for unsupported file types:
 
 ```typescript
-import { OutlineGenerator, OutlineNode, GeneratorOptions } from 'document-outline-gen';
+import { OutlineGenerator, OutlineNode, GeneratorOptions } from '@wanshi-kg/outlion';
 
 class SqlGenerator extends OutlineGenerator {
   async generate(content: string, options: GeneratorOptions = {}): Promise<OutlineNode[]> {
@@ -361,8 +361,8 @@ async function analyzeProject(projectPath: string) {
 ### Setup
 
 ```bash
-git clone https://github.com/AlexSabaka/document-outline-gen.git
-cd document-outline-gen
+git clone https://github.com/wanshi-kg/outlion.git
+cd outlion
 npm install
 ```
 
