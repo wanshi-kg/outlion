@@ -2,15 +2,22 @@
 
 import { program } from 'commander';
 import fs from 'fs/promises';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import DocumentOutlineGenerator from '.';
 import { GeneratorOptions } from './types';
 import { formatOutline, getFormats } from './formatters';
 import { UnsupportedFormatError } from './errors';
 
+// Read the version from package.json so the CLI never drifts from the published version.
+const { version } = JSON.parse(
+  readFileSync(join(__dirname, '../package.json'), 'utf-8'),
+) as { version: string };
+
 program
   .name('outlion')
   .description('Generate outline structures for various document types and code files')
-  .version('1.0.0');
+  .version(version);
 
 program
   .argument('<file>', 'file to analyze')
