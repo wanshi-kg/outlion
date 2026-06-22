@@ -1,5 +1,5 @@
 /**
- * Typed error hierarchy for document-outline-gen.
+ * Typed error hierarchy for outlion.
  *
  * Every error the library throws on purpose extends {@link OutlineError}, so
  * callers can `instanceof OutlineError` to tell an expected, recoverable

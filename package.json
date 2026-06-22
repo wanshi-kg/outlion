@@ -1,20 +1,23 @@
 {
-  "name": "document-outline-gen",
+  "name": "@wanshi-kg/outlion",
   "version": "1.0.0",
   "description": "Universal document outline structure generator for various file types and programming languages",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "document-outline-gen": "dist/cli.js"
+    "outlion": "dist/cli.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlexSabaka/document-outline-gen.git"
+    "url": "git+https://github.com/wanshi-kg/outlion.git"
   },
   "bugs": {
-    "url": "https://github.com/AlexSabaka/document-outline-gen/issues"
+    "url": "https://github.com/wanshi-kg/outlion/issues"
   },
-  "homepage": "https://github.com/AlexSabaka/document-outline-gen#readme",
+  "homepage": "https://github.com/wanshi-kg/outlion#readme",
   "scripts": {
     "build": "tsc",
     "postbuild": "copyfiles -u 1 \"src/queries/**/*.scm\" dist",
@@ -66,7 +69,8 @@
   },
   "files": [
     "dist/**/*",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=16.0.0"

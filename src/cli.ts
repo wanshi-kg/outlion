@@ -8,7 +8,7 @@ import { formatOutline, getFormats } from './formatters';
 import { UnsupportedFormatError } from './errors';
 
 program
-  .name('document-outline-gen')
+  .name('outlion')
   .description('Generate outline structures for various document types and code files')
   .version('1.0.0');
 
